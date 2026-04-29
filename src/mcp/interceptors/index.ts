@@ -14,6 +14,7 @@ import { docAuthErrorInterceptor } from "./doc-auth-error.js";
 import { mediaInterceptor } from "./msg-media.js";
 import { smartpageCreateInterceptor } from "./smartpage-create.js";
 import { smartpageExportInterceptor } from "./smartpage-export.js";
+import { smartsheetUploadInterceptor } from "./smartsheet-upload.js";
 import type { CallContext, CallInterceptor, BeforeCallOptions } from "./types.js";
 import type { SendJsonRpcOptions } from "../transport.js";
 
@@ -29,6 +30,7 @@ const interceptors: CallInterceptor[] = [
   mediaInterceptor,            // get_msg_media base64 拦截
   smartpageCreateInterceptor,  // smartpage_create 本地文件读取
   smartpageExportInterceptor,  // smartpage_get_export_result content → 本地文件
+  smartsheetUploadInterceptor, // smartsheet_add_records / update_records 本地文件上传
 ];
 
 // ============================================================================

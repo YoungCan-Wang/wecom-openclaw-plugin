@@ -79,6 +79,28 @@ const LOG_TAG = "[mcp]";
 export const WECOM_USERID_HEADER = "x-openclaw-wecom-userid";
 
 /**
+ * 构造 MCP 请求使用的 User-Agent
+ *
+ * 格式：`OpenClawPlugin/<version> <platform>/<arch>`
+ * 例如：`OpenClawPlugin/0.1.3 linux/x86_64`
+ *
+ * 说明：
+ * - version: 取自 package.json 的 PLUGIN_VERSION
+ * - platform: process.platform（linux / darwin / win32 ...）
+ * - arch: 将 Node 的 `x64` 归一化为传统 Unix 风格 `x86_64`，其他架构原样返回
+ */
+function buildUserAgent(): string {
+  const archMap: Record<string, string> = {
+    x64: "x86_64",
+    ia32: "i386",
+  };
+  const arch = archMap[process.arch] ?? process.arch;
+  return `OpenClawPlugin/${PLUGIN_VERSION} ${process.platform}/${arch}`;
+}
+
+const MCP_USER_AGENT = buildUserAgent();
+
+/**
  * MCP JSON-RPC 错误
  *
  * 携带服务端返回的 JSON-RPC error.code，
@@ -309,6 +331,7 @@ async function sendRawJsonRpc(
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     Accept: "application/json, text/event-stream",
+    "User-Agent": MCP_USER_AGENT,
   };
   // Streamable HTTP：携带会话 ID
   if (session.sessionId) {
